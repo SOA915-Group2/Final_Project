@@ -96,7 +96,7 @@ kubectl logs <pod-name>
 
 📂 Folder Structure
 
-├── user-service/
+├── identity-service/
 ├── product-service/
 ├── k8s/
 │   ├── deployments/
