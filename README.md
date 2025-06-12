@@ -5,6 +5,9 @@
 This project demonstrates the design, development, containerization, orchestration, and monitoring of a microservices-based application. Built using RESTful APIs, Docker, Kubernetes, and integrated with CI/CD and observability tools, the project simulates a real-world system on a local development environment.
 
 🧱 Architecture
+System Diagram
+![image](https://github.com/user-attachments/assets/6d0a43f0-30e9-4051-b276-af1c9f71bce7)
+
 
 Microservices Implemented:
 	•	Identity Service – Registration, authentication, and user profile management.
