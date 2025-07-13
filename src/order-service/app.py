@@ -1,36 +1,39 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import uuid, requests
+from pydantic import BaseModel, Field
+from typing import Optional
+from bson import ObjectId
+import motor.motor_asyncio
 
 app = FastAPI()
 
-# In-memory "database"
-orders = {}
+# MongoDB setup
+MONGO_DETAILS = "mongodb://db:27017"
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_DETAILS)
+db = client.order_db
+order_collection = db.get_collection("orders")
 
 class OrderRequest(BaseModel):
     user_id: str
     product_id: str
     quantity: int
 
-@app.post("/api/orders")
-def create_order(order: OrderRequest):
-    # Validate user via identity-service
-    try:
-        response = requests.get("http://identity-service:8000/api/users/validate", params={"user_id": order.user_id})
-        response.raise_for_status()
-    except requests.exceptions.RequestException:
-        raise HTTPException(status_code=401, detail="User validation failed")
+class OrderResponse(BaseModel):
+    id: str = Field(..., alias="_id")
+    user_id: str
+    product_id: str
+    quantity: int
 
-    order_id = str(uuid.uuid4())
-    orders[order_id] = {
-        "user_id": order.user_id,
-        "product_id": order.product_id,
-        "quantity": order.quantity
-    }
-    return {"order_id": order_id}
+@app.post("/api/orders", response_model=OrderResponse)
+async def create_order(order: OrderRequest):
+    order_doc = order.dict()
+    result = await order_collection.insert_one(order_doc)
+    order_doc["_id"] = str(result.inserted_id)
+    return order_doc
 
-@app.get("/api/orders/{order_id}")
-def get_order(order_id: str):
-    if order_id not in orders:
+@app.get("/api/orders/{order_id}", response_model=OrderResponse)
+async def get_order(order_id: str):
+    order = await order_collection.find_one({"_id": ObjectId(order_id)})
+    if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return orders[order_id]
+    order["_id"] = str(order["_id"])
+    return order
