@@ -101,12 +101,19 @@ kubectl logs <pod-name>
 📂 Folder Structure
 
 ├── src/identity-service/
+
 ├── src/product-service/
+
 ├── k8s/
+
 │   ├── deployments/
+
 │   ├── services/
+
 │   ├── config/
+
 ├── docker-compose.yml
+
 ├── README.md
 
 👥 Contributors
