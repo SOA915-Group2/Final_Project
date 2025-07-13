@@ -36,13 +36,8 @@ Prerequisites
 Setup Instructions
 
 1.	Clone the Repository
-<<<<<<< HEAD
-   git clone https://github.com/your-org/your-project.git
-   cd your-project
-=======
    git clone https://github.com/SOA915-Group2/Final_Project.git
    cd Final_Project
->>>>>>> 5e1e58b (First commit)
 
 2.	Run with Docker Compose (Development)
    docker-compose up --build
@@ -104,8 +99,8 @@ kubectl logs <pod-name>
 
 📂 Folder Structure
 
-├── identity-service/
-├── product-service/
+├── src/identity-service/
+├── src/product-service/
 ├── k8s/
 │   ├── deployments/
 │   ├── services/
@@ -122,5 +117,3 @@ kubectl logs <pod-name>
 📚 License
 
 MIT License
- 
- 
