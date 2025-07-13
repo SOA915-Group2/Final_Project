@@ -6,7 +6,8 @@ This project demonstrates the design, development, containerization, orchestrati
 
 🧱 Architecture
 System Diagram
-![image](https://github.com/user-attachments/assets/6d0a43f0-30e9-4051-b276-af1c9f71bce7)
+<img width="1032" height="859" alt="image" src="https://github.com/user-attachments/assets/1694d31d-ac40-4514-b1f4-cff03556370e" />
+
 
 
 Microservices Implemented:
