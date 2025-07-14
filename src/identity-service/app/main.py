@@ -107,7 +107,10 @@ async def login(user: UserCreate):
     if not user_record or not verify_password(user.password, user_record["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access_token = create_access_token(data={"sub": user_record["id"]})
+    access_token = create_access_token(data={
+        "sub": user_record["id"],
+        "username": user_record["username"]
+    })
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Protected route example

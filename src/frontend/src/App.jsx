@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import Nav from "./Nav";
 
-// Add above your return() in the component
-const Nav = () => (
-  <div className="flex justify-between items-center mb-6">
-    <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
-    <Link to="/products" className="text-blue-600 hover:underline">Products</Link>
-  </div>
-);
 
 // const API_BASE = import.meta.env.VITE_API_BASE;
 //const API_BASE = "http://localhost:8001/api";
@@ -88,9 +82,10 @@ export default function App() {
   }[status.type];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8 space-y-6">
-	<Nav /> {/* ✅ Here’s the navigation */}
+    <div className="min-h-screen bg-gray-100">
+    <Nav />  {/* ✅ add nav bar back */}
+    <div className="flex justify-center items-center min-h-[80vh]">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h1 className="text-3xl font-bold text-center text-gray-800">SOA Final Project</h1>
         <h2 className="text-lg text-center text-gray-600">User Login</h2>
 
@@ -138,6 +133,7 @@ export default function App() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

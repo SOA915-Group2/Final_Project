@@ -10,15 +10,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import Header
 
+#def get_current_user(authorization: str = Header(...)):
+#    try:
+#        scheme, token = authorization.split()
+#        if scheme.lower() != "bearer":
+#            raise ValueError
+#        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#        return payload.get("sub")
+#    except Exception:
+#        raise HTTPException(status_code=401, detail="Invalid token")
 def get_current_user(authorization: str = Header(...)):
-    try:
-        scheme, token = authorization.split()
-        if scheme.lower() != "bearer":
-            raise ValueError
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload.get("sub")
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    scheme, token = authorization.split()
+    if scheme.lower() != "bearer":
+        raise HTTPException(status_code=401, detail="Invalid auth scheme")
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    return payload.get("sub")
 
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_product:5432/product_db"
 database = databases.Database(DATABASE_URL)
@@ -66,12 +72,12 @@ class ProductOut(ProductIn):
     owner_id: str
 
 # Auth util
-def get_current_user(token: str):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload["sub"]
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+#def get_current_user(token: str):
+#    try:
+#        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#        return payload["sub"]
+#    except JWTError:
+#        raise HTTPException(status_code=401, detail="Invalid token")
 
 # Startup/shutdown
 @app.on_event("startup")
