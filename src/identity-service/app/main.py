@@ -1,13 +1,17 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy import Table, Column, String, MetaData, create_engine
 import databases
+import asyncio
 import uuid
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from starlette.status import HTTP_401_UNAUTHORIZED
+from pathlib import Path
+
 
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db:5432/identity_db"
@@ -34,7 +38,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+## oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Schemas
 class UserCreate(BaseModel):
@@ -65,7 +70,12 @@ async def get_user(username: str):
 # FastAPI startup
 @app.on_event("startup")
 async def startup():
-    await database.connect()
+    for _ in range(10):
+        try:
+            await database.connect()
+            break
+        except Exception:
+            await asyncio.sleep(2)
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -83,13 +93,22 @@ async def register(user: UserCreate):
     return {"user_id": user_id}
 
 # Login and get token
-@app.post("/api/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await get_user(form_data.username)
-    if not user or not verify_password(form_data.password, user["password_hash"]):
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+#@app.post("/api/login", response_model=Token)
+#async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+#    user = await get_user(form_data.username)
+#    if not user or not verify_password(form_data.password, user["password_hash"]):
+#        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+#
+#    access_token = create_access_token(data={"sub": user["id"]})
+#    return {"access_token": access_token, "token_type": "bearer"}
 
-    access_token = create_access_token(data={"sub": user["id"]})
+@app.post("/api/login")
+async def login(user: UserCreate):
+    user_record = await get_user(user.username)
+    if not user_record or not verify_password(user.password, user_record["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    access_token = create_access_token(data={"sub": user_record["id"]})
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Protected route example
@@ -101,3 +120,15 @@ async def get_me(token: str = Depends(oauth2_scheme)):
         return {"user_id": user_id}
     except JWTError:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+@app.get("/api/users/validate")
+async def validate_user(user_id: str):
+    query = users.select().where(users.c.id == user_id)
+    result = await database.fetch_one(query)
+    if not result:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"valid": True}
+
+# Serve React frontend build from ./static directory
+static_path = Path(__file__).parent / "static"
+app.mount("/", StaticFiles(directory=static_path, html=True), name="static")

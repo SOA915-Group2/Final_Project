@@ -1,43 +1,23 @@
 import { useState, useEffect } from "react";
 
-const API_BASE = "http://localhost:8001/api";
+//const API_BASE = "http://localhost:8001/api";
+const API_BASE = "http://172.16.16.134:8001/api";
 
 export default function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [status, setStatus] = useState({ msg: "", type: "neutral" });
-  const [loading, setLoading] = useState(false);
 
   const setStatusMessage = (msg, type = "neutral") => {
-    setStatus({ msg, type }); // type: "success", "error", "neutral"
+    setStatus({ msg, type });
   };
-
-  // Check token on load
-  useEffect(() => {
-    if (token) {
-      fetch(`${API_BASE}/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.ok ? res.json() : Promise.reject())
-        .then((data) => {
-          setUserId(data.user_id);
-          setStatusMessage("âœ… Token valid", "success");
-        })
-        .catch(() => {
-          handleLogout();
-          setStatusMessage("âŒ Invalid token", "error");
-        });
-    }
-  }, []);
 
   const handleRegister = async () => {
     if (!username || !password) {
-      setStatusMessage("âŒ Username and password required", "error");
+      setStatusMessage("Username and password required", "error");
       return;
     }
-    setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/register`, {
         method: "POST",
@@ -46,99 +26,89 @@ export default function App() {
       });
       const result = await res.json();
       if (res.ok) {
-        setStatusMessage(`âœ… Registered! ID: ${result.user_id}`, "success");
+        setStatusMessage("âœ… Registered successfully", "success");
       } else {
         setStatusMessage(`âŒ ${result.detail}`, "error");
       }
     } catch {
       setStatusMessage("âŒ Registration failed", "error");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setStatusMessage("âŒ Username and password required", "error");
+      setStatusMessage("Username and password required", "error");
       return;
     }
-    setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ username, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
       const result = await res.json();
       if (res.ok) {
         localStorage.setItem("token", result.access_token);
         setToken(result.access_token);
-        setUserId(result.user_id || "Logged in");
         setStatusMessage("âœ… Login successful", "success");
       } else {
         setStatusMessage(`âŒ ${result.detail}`, "error");
       }
     } catch {
       setStatusMessage("âŒ Login failed", "error");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
-    setUserId(null);
-    setStatusMessage("í ½íºª Logged out", "neutral");
+    setStatusMessage("Logged out", "neutral");
   };
 
   const statusColor = {
     success: "text-green-600",
     error: "text-red-600",
-    neutral: "text-gray-600",
+    neutral: "text-gray-500",
   }[status.type];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded shadow space-y-6">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Identity Service</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 flex items-center justify-center px-4">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-gray-800">SOA Final Project</h1>
+        <h2 className="text-lg text-center text-gray-600">User Login</h2>
 
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2"
+          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:border-blue-500"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          disabled={loading}
         />
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2"
+          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:border-blue-500"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          disabled={loading}
         />
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button
+            className="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
             onClick={handleRegister}
-            className="w-1/2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-            disabled={loading}
           >
-            {loading ? "Registering..." : "Register"}
+            Register
           </button>
           {!token ? (
             <button
+              className="w-1/2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded"
               onClick={handleLogin}
-              className="w-1/2 bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
-              disabled={loading}
             >
-              {loading ? "Logging in..." : "Login"}
+              Login
             </button>
           ) : (
             <button
+              className="w-1/2 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded"
               onClick={handleLogout}
-              className="w-1/2 bg-red-500 text-white py-2 rounded hover:bg-red-600"
             >
               Logout
             </button>
@@ -146,14 +116,8 @@ export default function App() {
         </div>
 
         {status.msg && (
-          <div className={`text-sm mt-2 ${statusColor}`}>
+          <div className={`text-center text-sm font-medium ${statusColor}`}>
             {status.msg}
-          </div>
-        )}
-
-        {token && (
-          <div className="text-xs text-gray-400 break-all mt-2">
-            <strong>Token:</strong> {token}
           </div>
         )}
       </div>

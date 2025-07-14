@@ -5,3 +5,5 @@ uvicorn
 databases
 sqlalchemy
 asyncpg
+psycopg2-binary
+python-multipart
