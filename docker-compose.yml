@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   identity-service:
-    build: ./identity-service
+    build: ./src/identity-service
     ports:
       - "8001:8000"
     depends_on:

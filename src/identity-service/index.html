@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Identity Service UI</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: auto; padding: 20px; }
+    h2 { color: #333; }
+    input, button { padding: 8px; margin-top: 8px; display: block; width: 100%; }
+    .result { margin-top: 12px; padding: 10px; background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h2>Register User</h2>
+  <input id="reg-username" type="text" placeholder="Username">
+  <input id="reg-password" type="password" placeholder="Password">
+  <button onclick="registerUser()">Register</button>
+  <div id="register-result" class="result"></div>
+
+  <h2>Validate User</h2>
+  <input id="validate-id" type="text" placeholder="User ID">
+  <button onclick="validateUser()">Validate</button>
+  <div id="validate-result" class="result"></div>
+
+  <script>
+    const apiBase = "http://localhost:8001/api"; // adjust if using a different port
+
+    async function registerUser() {
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const res = await fetch(`${apiBase}/register`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await res.json();
+      document.getElementById('register-result').innerText =
+        res.ok ? `✅ Registered! ID: ${result.user_id}` : `❌ ${result.detail}`;
+    }
+
+    async function validateUser() {
+      const userId = document.getElementById('validate-id').value;
+      const res = await fetch(`${apiBase}/users/validate?user_id=${userId}`);
+      const result = await res.json();
+      document.getElementById('validate-result').innerText =
+        res.ok ? `✅ Valid User` : `❌ ${result.detail}`;
+    }
+  </script>
+</body>
+</html>

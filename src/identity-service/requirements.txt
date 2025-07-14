@@ -1,5 +1,7 @@
+python-jose[cryptography]
+passlib[bcrypt]
 fastapi
 uvicorn
+databases
 sqlalchemy
 asyncpg
-databases
