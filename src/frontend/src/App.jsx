@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
+// Add above your return() in the component
+const Nav = () => (
+  <div className="flex justify-between items-center mb-6">
+    <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+    <Link to="/products" className="text-blue-600 hover:underline">Products</Link>
+  </div>
+);
+
+// const API_BASE = import.meta.env.VITE_API_BASE;
 //const API_BASE = "http://localhost:8001/api";
-const API_BASE = "http://172.16.16.134:8001/api";
+const API_BASE = window.location.origin.replace("5173", "8001") + "/api";
 
 export default function App() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -22,7 +34,10 @@ export default function App() {
       const res = await fetch(`${API_BASE}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+	body: JSON.stringify({
+            username: username,   // must match FastAPI model
+            password: password,   // must match FastAPI model
+        }),
       });
       const result = await res.json();
       if (res.ok) {
@@ -51,6 +66,7 @@ export default function App() {
         localStorage.setItem("token", result.access_token);
         setToken(result.access_token);
         setStatusMessage("✅ Login successful", "success");
+	navigate("/products");
       } else {
         setStatusMessage(`❌ ${result.detail}`, "error");
       }
@@ -74,6 +90,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8 space-y-6">
+	<Nav /> {/* ✅ Here’s the navigation */}
         <h1 className="text-3xl font-bold text-center text-gray-800">SOA Final Project</h1>
         <h2 className="text-lg text-center text-gray-600">User Login</h2>
 

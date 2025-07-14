@@ -1,34 +1,65 @@
-version: '3.8'
-
 services:
   identity-service:
     build: ./src/identity-service
+    container_name: identity-service
     ports:
       - "8001:8000"
     depends_on:
-      - db
+      - db_identity
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/identity_db
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db
+    restart: always
 
-        #  frontend:
-        #    build: ./src/identity-service/frontend
-        #    ports:
-        #      - "5173:80"
-        #    environment:
-        #      - VITE_API_BASE=http://172.16.16.134:8000/api
-        #    depends_on:
-        #      - identity-service
+  product-service:
+    build: ./src/product-service
+    container_name: product-service
+    ports:
+      - "8002:8000"
+    depends_on:
+      - db_product
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_product:5432/product_db
+    restart: always
 
-  db:
+  db_identity:
     image: postgres:14
+    container_name: identity-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: identity_db
     ports:
-      - "5432:5432"
+      - "5433:5432"  # external port (optional)
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata_identity:/var/lib/postgresql/data
+    restart: always
+
+  db_product:
+    image: postgres:14
+    container_name: product-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: product_db
+    ports:
+      - "5434:5432"  # external port (optional)
+    volumes:
+      - pgdata_product:/var/lib/postgresql/data
+    restart: always
+
+  frontend:
+    build: ./src/frontend
+    container_name: frontend
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_BASE=http://identity-service:8000/api
+      - API_BASE_PRODUCT=http://product-service:8000/api
+    depends_on:
+      - identity-service
+      - product-service
+    restart: always
 
 volumes:
-  pgdata:
+  pgdata_identity:
+  pgdata_product:

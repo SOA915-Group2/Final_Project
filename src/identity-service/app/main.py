@@ -11,10 +11,11 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from starlette.status import HTTP_401_UNAUTHORIZED
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Database setup
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db:5432/identity_db"
+DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db"
 database = databases.Database(DATABASE_URL)
 metadata = MetaData()
 
@@ -32,13 +33,21 @@ metadata.create_all(engine)
 # App init
 app = FastAPI()
 
+# Allow requests from frontend (in Docker or local)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Use ["http://localhost:5173"] or ["http://frontend"] for stricter control
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Security settings
 SECRET_KEY = "super-secret-key"  # Use environment variable in production!
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-## oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Schemas
@@ -91,16 +100,6 @@ async def register(user: UserCreate):
     query = users.insert().values(id=user_id, username=user.username, password_hash=hashed)
     await database.execute(query)
     return {"user_id": user_id}
-
-# Login and get token
-#@app.post("/api/login", response_model=Token)
-#async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-#    user = await get_user(form_data.username)
-#    if not user or not verify_password(form_data.password, user["password_hash"]):
-#        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-#
-#    access_token = create_access_token(data={"sub": user["id"]})
-#    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/api/login")
 async def login(user: UserCreate):
