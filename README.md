@@ -109,7 +109,9 @@ kubectl logs <pod-name>
 
 | Folder Structure |
 | ------ |
+| ├── src/frontend//|
 | ├── src/identity-service/|
+| ├── src/order-service/|
 | ├── src/product-service/|
 | ├── k8s/|
 | ├──├── deployments/|
