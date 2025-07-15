@@ -3,6 +3,7 @@ import Nav from "./Nav";
 
 // const API_BASE = import.meta.env.API_BASE_PRODUCT;
 const API_BASE = window.location.origin.replace("5173", "8002") + "/api";
+const ORDER_API = window.location.origin.replace("5173", "8003") + "/api";
 
 import { Link } from "react-router-dom"; // Make sure this is at the top
 
@@ -66,6 +67,33 @@ export default function ProductPage() {
     if (res.ok) fetchProducts();
   };
 
+  const placeOrder = async (productId) => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("You must be logged in to place an order.");
+    const res = await fetch(`${ORDER_API}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product_id: String(productId),
+        quantity: 1,
+      }),
+    });
+
+    try {
+      const result = await res.json();
+      if (res.ok) {
+        alert("✅ Order placed!");
+      } else {
+        alert("❌ Order failed: " + (result.detail || JSON.stringify(result)));
+      }
+    } catch {
+      alert("❌ Order failed: Invalid JSON response");
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -102,7 +130,7 @@ export default function ProductPage() {
                    onClick={() => placeOrder(p.id)}
                    className="text-green-600 hover:underline"
                  >
-                   Order
+                   Add To Cart
                  </button>
                </div>
                </li>

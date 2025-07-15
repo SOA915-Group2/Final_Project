@@ -13,7 +13,6 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 
-
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db"
 database = databases.Database(DATABASE_URL)

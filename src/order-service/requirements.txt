@@ -1,4 +1,6 @@
+passlib[bcrypt]
 fastapi
 uvicorn
 motor
 pydantic
+python-jose

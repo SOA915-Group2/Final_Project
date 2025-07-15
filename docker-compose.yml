@@ -7,7 +7,8 @@ services:
     depends_on:
       - db_identity
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db
+      - SECRET_KEY=fMC3adp-XLYg2biE1w8qFFKwxkDjr3N3t6OpvchjrNY
     restart: always
 
   product-service:
@@ -18,7 +19,21 @@ services:
     depends_on:
       - db_product
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db_product:5432/product_db
+      - DATABASE_URL+postgresql+asyncpg://postgres:postgres@db_product:5432/product_db
+      - SECRET_KEY=fMC3adp-XLYg2biE1w8qFFKwxkDjr3N3t6OpvchjrNY
+    restart: always
+
+  order-service:
+    build: ./src/order-service
+    container_name: order-service
+    ports:
+      - "8003:8000"
+    depends_on:
+      - identity-service
+      - mdb
+    environment:
+      - MONGO_URL=mongodb://mdb:27017
+      - SECRET_KEY=fMC3adp-XLYg2biE1w8qFFKwxkDjr3N3t6OpvchjrNY
     restart: always
 
   db_identity:
@@ -59,7 +74,14 @@ services:
       - identity-service
       - product-service
     restart: always
+  mdb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
 
 volumes:
   pgdata_identity:
   pgdata_product:
+  mongodata:

@@ -10,15 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import Header
 
-#def get_current_user(authorization: str = Header(...)):
-#    try:
-#        scheme, token = authorization.split()
-#        if scheme.lower() != "bearer":
-#            raise ValueError
-#        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#        return payload.get("sub")
-#    except Exception:
-#        raise HTTPException(status_code=401, detail="Invalid token")
 def get_current_user(authorization: str = Header(...)):
     scheme, token = authorization.split()
     if scheme.lower() != "bearer":
