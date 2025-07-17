@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: identity-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-db
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: identity-postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: identity-postgres
+spec:
+  serviceName: "identity-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-postgres
+  template:
+    metadata:
+      labels:
+        app: identity-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: identity_db
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: identity-postgres-pvc

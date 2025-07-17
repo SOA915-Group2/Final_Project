@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-service
+  template:
+    metadata:
+      labels:
+        app: identity-service
+    spec:
+      containers:
+      - name: identity-service
+        image: us-central1-docker.pkg.dev/carbon-beanbag-465619-m4/soa915-project-repo/identity-service
+        ports:
+        - containerPort: 8000
+        env:
+        - name: SECRET_KEY
+          value: "fMC3adp-XLYg2biE1w8qFFKwxkDjr3N3t6OpvchjrNY"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+spec:
+  selector:
+    app: identity-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: ClusterIP
