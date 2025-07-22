@@ -64,7 +64,7 @@ class OrderResponse(BaseModel):
     user_id: str
     created_at: datetime
 
-@app.post("/api/orders", response_model=OrderResponse)
+@app.post("/", response_model=OrderResponse)
 async def place_order(order: OrderRequest, user_id: str = Depends(get_current_user)):
     print("Received order request:", order)
     new_order = {
@@ -85,7 +85,7 @@ async def place_order(order: OrderRequest, user_id: str = Depends(get_current_us
       "created_at": new_order["created_at"]
     }
 
-@app.get("/api/orders/{order_id}", response_model=OrderResponse)
+@app.get("/{order_id}", response_model=OrderResponse)
 async def get_order(order_id: str):
     order = await orders_collection.find_one({"_id": ObjectId(order_id)})
     if not order:
@@ -93,7 +93,7 @@ async def get_order(order_id: str):
     order["_id"] = str(order["_id"])
     return order
 
-@app.get("/api/orders")
+@app.get("/")
 async def get_orders(user_id: str = Depends(get_current_user)):
     cursor = orders_collection.find({"user_id": user_id})
     results = []

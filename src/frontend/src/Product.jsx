@@ -3,7 +3,7 @@ import Nav from "./Nav";
 
 // const API_BASE = import.meta.env.API_BASE_PRODUCT;
 const API_BASE = window.location + "/api/products";
-const ORDER_API = window.location + "/api/order";
+const ORDER_API = window.location + "/api/orders";
 
 import { Link } from "react-router-dom"; // Make sure this is at the top
 

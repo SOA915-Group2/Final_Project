@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Nav from "./Nav.jsx";
 
-const API_BASE = "http://product-service/api";
+const API_BASE = window.location + "/api/products";
 
 export default function EditProductPage() {
   const [products, setProducts] = useState([]);
@@ -9,7 +9,7 @@ export default function EditProductPage() {
   const token = localStorage.getItem("token");
 
   const fetchProducts = async () => {
-    const res = await fetch(`${API_BASE}/products`);
+    const res = await fetch(`${API_BASE}`);
     const data = await res.json();
     setProducts(data);
   };
@@ -21,8 +21,8 @@ export default function EditProductPage() {
   const saveProduct = async () => {
     const method = form.id ? "PUT" : "POST";
     const url = form.id
-      ? `${API_BASE}/products/${form.id}`
-      : `${API_BASE}/products`;
+      ? `${API_BASE}/${form.id}`
+      : `${API_BASE}`;
 
     await fetch(url, {
       method,
@@ -38,7 +38,7 @@ export default function EditProductPage() {
   };
 
   const deleteProduct = async (id) => {
-    await fetch(`${API_BASE}/products/${id}`, {
+    await fetch(`${API_BASE}/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

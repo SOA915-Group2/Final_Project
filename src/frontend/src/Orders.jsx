@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
 import Nav from "./Nav";
 
-const ORDER_API = "http://order-service/api";
+const ORDER_API = window.location + "/api/orders";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
