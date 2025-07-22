@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Nav from "./Nav";
 
 // const API_BASE = import.meta.env.API_BASE_PRODUCT;
-const API_BASE = window.location.origin.replace("5173", "8002") + "/api";
-const ORDER_API = window.location.origin.replace("5173", "8003") + "/api";
+const API_BASE = window.location + "/api/products";
+const ORDER_API = window.location + "/api/order";
 
 import { Link } from "react-router-dom"; // Make sure this is at the top
 
@@ -15,7 +15,7 @@ export default function ProductPage() {
   const [form, setForm] = useState({ name: "", price: "", description: "" });
 
   const fetchProducts = async () => {
-    const res = await fetch(`${API_BASE}/products`);
+    const res = await fetch(`${API_BASE}`);
     const data = await res.json();
     setProducts(data);
   };
@@ -28,7 +28,7 @@ export default function ProductPage() {
   const token = localStorage.getItem("token");
 
   const submit = async () => {
-    const res = await fetch(`${API_BASE}/products`, {
+    const res = await fetch(`${API_BASE}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export default function ProductPage() {
   };
 
   const remove = async (id) => {
-    const res = await fetch(`${API_BASE}/products/${id}`, {
+    const res = await fetch(`${API_BASE}/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -56,7 +56,7 @@ export default function ProductPage() {
   const update = async (id) => {
     const updated = prompt("Enter new name:");
     if (!updated) return;
-    const res = await fetch(`${API_BASE}/products/${id}`, {
+    const res = await fetch(`${API_BASE}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

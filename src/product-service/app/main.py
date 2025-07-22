@@ -17,7 +17,7 @@ def get_current_user(authorization: str = Header(...)):
     payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     return payload.get("sub")
 
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_product:5432/product_db"
+DATABASE_URL = "postgresql+asyncpg://postgres:postgres@product-db:5432/product_db"
 database = databases.Database(DATABASE_URL)
 metadata = MetaData()
 
@@ -85,18 +85,18 @@ async def shutdown():
     await database.disconnect()
 
 # Routes
-@app.get("/api/products", response_model=List[ProductOut])
+@app.get("/", response_model=List[ProductOut])
 async def list_products():
     query = products.select()
     return await database.fetch_all(query)
 
-@app.post("/api/products", response_model=ProductOut)
+@app.post("/", response_model=ProductOut)
 async def create_product(product: ProductIn, token: str = Depends(get_current_user)):
     query = products.insert().values(**product.dict(), owner_id=token)
     product_id = await database.execute(query)
     return {**product.dict(), "id": product_id, "owner_id": token}
 
-@app.put("/api/products/{product_id}", response_model=ProductOut)
+@app.put("/{product_id}", response_model=ProductOut)
 async def update_product(product_id: int, product: ProductIn, token: str = Depends(get_current_user)):
     query = sql_update(products).where(products.c.id == product_id).values(
         name=product.name,
@@ -106,7 +106,7 @@ async def update_product(product_id: int, product: ProductIn, token: str = Depen
     await database.execute(query)
     return {**product.dict(), "id": product_id, "owner_id": token}
 
-@app.delete("/api/products/{product_id}")
+@app.delete("/{product_id}")
 async def delete_product(product_id: int, token: str = Depends(get_current_user)):
     query = sql_delete(products).where(products.c.id == product_id)
     await database.execute(query)

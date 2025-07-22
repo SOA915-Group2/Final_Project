@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Nav from "./Nav.jsx";
 
-const API_BASE = window.location.origin.replace("5173", "8002") + "/api";
+const API_BASE = "http://product-service/api";
 
 export default function EditProductPage() {
   const [products, setProducts] = useState([]);

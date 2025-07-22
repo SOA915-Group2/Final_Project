@@ -14,7 +14,8 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 
 # Database setup
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db"
+# DATABASE_URL = "postgresql+asyncpg://postgres:postgres@db_identity:5432/identity_db"
+DATABASE_URL = "postgresql+asyncpg://postgres:postgres@identity-db:5432/identity_db"
 database = databases.Database(DATABASE_URL)
 metadata = MetaData()
 
@@ -90,7 +91,7 @@ async def shutdown():
     await database.disconnect()
 
 # Register user
-@app.post("/api/register")
+@app.post("/register")
 async def register(user: UserCreate):
     if await get_user(user.username):
         raise HTTPException(status_code=400, detail="User already exists")
@@ -100,7 +101,7 @@ async def register(user: UserCreate):
     await database.execute(query)
     return {"user_id": user_id}
 
-@app.post("/api/login")
+@app.post("/login")
 async def login(user: UserCreate):
     user_record = await get_user(user.username)
     if not user_record or not verify_password(user.password, user_record["password_hash"]):
@@ -113,7 +114,7 @@ async def login(user: UserCreate):
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Protected route example
-@app.get("/api/me")
+@app.get("/me")
 async def get_me(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -122,7 +123,7 @@ async def get_me(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-@app.get("/api/users/validate")
+@app.get("/users/validate")
 async def validate_user(user_id: str):
     query = users.select().where(users.c.id == user_id)
     result = await database.fetch_one(query)

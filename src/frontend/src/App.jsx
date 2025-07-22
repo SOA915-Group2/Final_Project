@@ -3,10 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import Nav from "./Nav";
 
-
-// const API_BASE = import.meta.env.VITE_API_BASE;
-//const API_BASE = "http://localhost:8001/api";
-const API_BASE = window.location.origin.replace("5173", "8001") + "/api";
+const API_BASE = window.location + "api/identity";
 
 export default function App() {
   const navigate = useNavigate();
