@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: net-debug
+spec:
+  containers:
+  - name: net-debug
+    image: nicolaka/netshoot
+    command: ["/bin/bash"]
+    stdin: true
+    tty: true
+  restartPolicy: Never
