@@ -147,14 +147,14 @@ async def validate_user(user_id: str):
     return {"valid": True}
 
 @app.delete("/users/{username}", status_code=204)
-def delete_user(username: str, db: Session = Depends(get_db)):
-    user = db.query(users).filter(users.username == username).first()
-    if user:
-        db.delete(user)
-        db.commit()
+async def delete_user(username: str):
+    query = delete(users).where(users.c.username == username)
+    result = await database.execute(query)
+
+    if result:
         return {"detail": "User deleted"}
     else:
-        return {"detail": "User not found"}
+        raise HTTPException(status_code=404, detail="User not found")
 
 # Serve React frontend build from ./static directory
 static_path = Path(__file__).parent / "static"
