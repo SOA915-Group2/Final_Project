@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from sqlalchemy import Table, Column, String, MetaData, create_engine
+from sqlalchemy import Table, Column, String, MetaData, create_engine, delete
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 import databases
