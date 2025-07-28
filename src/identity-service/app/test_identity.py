@@ -13,7 +13,7 @@ HOSTNAME = "34.44.171.179"
 BASE_URL = f"http://{HOSTNAME}/api/identity"
 @pytest.mark.asyncio
 async def test_register_and_login():
-    async with httpx.AsyncClient(base_url=BASE_URL) as client:
+    async with AsyncClient(base_url=BASE_URL) as client:
         # Register a user
         register_resp = await client.post("/register", json={"username": "testuser", "password": "secret"})
         assert register_resp.status_code == 200
@@ -28,7 +28,7 @@ async def test_register_and_login():
 
 @pytest.mark.asyncio
 async def test_login_invalid_credentials():
-    async with httpx.AsyncClient(base_url=BASE_URL) as client:
+    async with AsyncClient(base_url=BASE_URL) as client:
         resp = await client.post("/login", json={"username": "nouser", "password": "wrong"})
         assert resp.status_code == 401
         assert resp.json()["detail"] == "Invalid credentials"
