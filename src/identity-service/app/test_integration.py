@@ -10,7 +10,7 @@ PRODUCT_API = "http://product-service.default.svc.cluster.local/api/products"
 @pytest.mark.asyncio
 async def test_register_login_and_get_products():
     test_user = {
-        "username": "integration_user",
+        "username": "integration_user1",
         "password": "testpass123"
     }
 
