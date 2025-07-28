@@ -15,7 +15,7 @@ BASE_URL = f"http://{HOSTNAME}/api/identity"
 async def test_register_and_login():
     async with AsyncClient(base_url=BASE_URL) as client:
         # Delete a user
-        res = await client.delete(f"/users/testuser1}")
+        res = await client.delete("/users/testuser1")
         assert res.status_code == 204
 
         # Register a user
