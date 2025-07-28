@@ -4,6 +4,8 @@ from .main import app, database
 from fastapi.testclient import TestClient
 from unittest.mock import patch
 
+pytestmark = pytest.mark.asyncio
+
 client = TestClient(app)
 
 ## Define a base URL
