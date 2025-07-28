@@ -15,12 +15,12 @@ BASE_URL = f"http://{HOSTNAME}/api/identity"
 async def test_register_and_login():
     async with AsyncClient(base_url=BASE_URL) as client:
         # Register a user
-        register_resp = await client.post("/register", json={"username": "testuser", "password": "secret"})
+        register_resp = await client.post("/register", json={"username": "testuser1", "password": "secret"})
         assert register_resp.status_code == 200
         assert "user_id" in register_resp.json()
 
         # Login with the registered user
-        login_resp = await client.post("/login", json={"username": "testuser", "password": "secret"})
+        login_resp = await client.post("/login", json={"username": "testuser1", "password": "secret"})
         assert login_resp.status_code == 200
         data = login_resp.json()
         assert "access_token" in data

@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from passlib.hash import bcrypt
 from sqlalchemy import Table, Column, String, MetaData, create_engine
 import databases
 import asyncio
@@ -13,6 +12,7 @@ from datetime import datetime, timedelta
 from starlette.status import HTTP_401_UNAUTHORIZED
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@identity-db:5432/identity_db"
@@ -81,18 +81,15 @@ async def get_user(username: str):
     return await database.fetch_one(query)
 
 # FastAPI startup
-@app.on_event("startup")
-async def startup():
-    for _ in range(10):
-        try:
-            await database.connect()
-            break
-        except Exception:
-            await asyncio.sleep(2)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    print("Starting app")
+    yield
+    # Shutdown logic
+    print("Shutting down app")
 
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+app = FastAPI(lifespan=lifespan)
 
 # Register user
 @app.post("/register")
