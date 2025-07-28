@@ -103,16 +103,6 @@ async def register(user: UserCreate):
     await database.execute(query)
     return {"user_id": user_id}
 
-@app.delete("/users/{username}", status_code=204)
-def delete_user(username: str, db: Session = Depends(database.get_db)):
-    user = db.query(models.User).filter(models.User.username == username).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    db.delete(user)
-    db.commit()
-    return
-
 @app.post("/login")
 async def login(user: UserCreate):
     user_record = await get_user(user.username)
@@ -142,6 +132,15 @@ async def validate_user(user_id: str):
     if not result:
         raise HTTPException(status_code=404, detail="User not found")
     return {"valid": True}
+
+@app.delete("/users/{username}", status_code=204)
+def delete_user(username: str, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db.delete(user)
+    db.commit()
 
 # Serve React frontend build from ./static directory
 static_path = Path(__file__).parent / "static"
