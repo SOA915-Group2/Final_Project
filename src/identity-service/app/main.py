@@ -145,7 +145,7 @@ async def validate_user(user_id: str):
     return {"valid": True}
 
 @app.delete("/users/{username}", status_code=204)
-def delete_user(username: str, db: Session = Depends(database.get_db)):
+def delete_user(username: str, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
