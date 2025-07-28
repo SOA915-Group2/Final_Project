@@ -32,6 +32,15 @@ metadata.create_all(engine)
 # App init
 app = FastAPI()
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+# Move DB connection to function
+def init():
+    from database import connect  # Delayed import
+    connect()
+
 # Allow requests from frontend (in Docker or local)
 app.add_middleware(
     CORSMiddleware,
@@ -133,3 +142,6 @@ async def validate_user(user_id: str):
 # Serve React frontend build from ./static directory
 static_path = Path(__file__).parent / "static"
 app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
+
+if __name__ == "__main__":
+    init()
