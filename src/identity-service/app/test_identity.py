@@ -3,6 +3,9 @@ from httpx import AsyncClient
 from .main import app, database
 from fastapi.testclient import TestClient
 from unittest.mock import patch
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
 pytestmark = pytest.mark.asyncio
 
