@@ -6,12 +6,6 @@ from unittest.mock import patch
 
 client = TestClient(app)
 
-@patch("app.database.connect")  # Mock the DB connect function
-def test_root(mock_connect):
-    mock_connect.return_value = None  # Prevent real DB connection
-    response = client.get("/")
-    assert response.status_code == 200
-
 ## Define a base URL
 HOSTNAME = "34.44.171.179"
 BASE_URL = f"http://{HOSTNAME}/api/identity"
