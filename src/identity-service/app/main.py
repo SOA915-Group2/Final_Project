@@ -16,7 +16,7 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 #from passlib.hash import bcrypt
-import bcrypt
+#import bcrypt
 
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@identity-db:5432/identity_db"
