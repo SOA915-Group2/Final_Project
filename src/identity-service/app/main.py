@@ -36,11 +36,6 @@ app = FastAPI()
 def health_check():
     return {"status": "ok"}
 
-# Move DB connection to function
-def init():
-    from database import connect  # Delayed import
-    connect()
-
 # Allow requests from frontend (in Docker or local)
 app.add_middleware(
     CORSMiddleware,
@@ -144,4 +139,4 @@ static_path = Path(__file__).parent / "static"
 app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
 
 if __name__ == "__main__":
-    init()
+    app()
