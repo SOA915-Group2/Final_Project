@@ -13,5 +13,6 @@ spec:
         pip install pytest httpx fastapi sqlalchemy psycopg2-binary jose && \
         git clone https://github.com/SOA915-Group2/Final_Project.git && \
         cd Final_Project/src/identity-service && \
+        pip install --no-cache-dir -r requirements.txt && \
         pytest ./app/test_identity.py
   restartPolicy: Never
