@@ -33,14 +33,14 @@ users = Table(
 engine = create_engine(DATABASE_URL.replace("asyncpg", "psycopg2"))
 metadata.create_all(engine)
 
-#SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-#
-#def get_db():
-#    db = SessionLocal()
-#    try:
-#        yield db
-#    finally:
-#        db.close()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # App init
 app = FastAPI()
@@ -146,15 +146,15 @@ async def validate_user(user_id: str):
         raise HTTPException(status_code=404, detail="User not found")
     return {"valid": True}
 
-#@app.delete("/users/{username}", status_code=204)
-#def delete_user(username: str, db: Session = Depends(get_db)):
-#    user = db.query(users).filter(users.username == username).first()
-#    if user:
-#        db.delete(user)
-#        db.commit()
-#        return {"detail": "User deleted"}
-#    else:
-#        return {"detail": "User not found"}
+@app.delete("/users/{username}", status_code=204)
+def delete_user(username: str, db: Session = Depends(get_db)):
+    user = db.query(users).filter(users.username == username).first()
+    if user:
+        db.delete(user)
+        db.commit()
+        return {"detail": "User deleted"}
+    else:
+        return {"detail": "User not found"}
 
 # Serve React frontend build from ./static directory
 static_path = Path(__file__).parent / "static"
