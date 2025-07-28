@@ -16,8 +16,8 @@ async def test_register_login_and_get_products():
 
     async with AsyncClient() as client:
         # 1. Register
-        # reg_response = await client.post(f"{IDENTITY_API}/register", json=test_user)
-        register_resp = await client.post(f"{IDENTITY_API}/register", json={"username": "testuser4", "password": "secret"})
+        register_resp = await client.post(f"{IDENTITY_API}/register", json=test_user)
+        # register_resp = await client.post(f"{IDENTITY_API}/register", json={"username": "testuser4", "password": "secret"})
         assert register_resp.status_code in (200, 201)
 
         # 2. Login
