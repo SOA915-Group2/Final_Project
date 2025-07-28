@@ -10,14 +10,13 @@ PRODUCT_API = "http://product-service.default.svc.cluster.local"
 @pytest.mark.asyncio
 async def test_register_login_and_get_products():
     test_user = {
-        "username": "integration_user2",
+        "username": "integration_user3",
         "password": "testpass123"
     }
 
     async with AsyncClient() as client:
         # 1. Register
         register_resp = await client.post(f"{IDENTITY_API}/register", json=test_user)
-        # register_resp = await client.post(f"{IDENTITY_API}/register", json={"username": "testuser4", "password": "secret"})
         assert register_resp.status_code in (200, 201)
 
         # 2. Login
