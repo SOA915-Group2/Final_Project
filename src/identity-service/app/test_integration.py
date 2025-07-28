@@ -4,8 +4,8 @@ from .main import app
 
 ## Define a base URL
 # HOSTNAME = "34.44.171.179"
-IDENTITY_API = "http://identity-service.default.svc.cluster.local/api/identity"
-PRODUCT_API = "http://product-service.default.svc.cluster.local/api/products"
+IDENTITY_API = "http://identity-service.default.svc.cluster.local"
+PRODUCT_API = "http://product-service.default.svc.cluster.local"
 
 @pytest.mark.asyncio
 async def test_register_login_and_get_products():
