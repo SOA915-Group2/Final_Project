@@ -12,19 +12,6 @@ from datetime import datetime, timedelta
 from starlette.status import HTTP_401_UNAUTHORIZED
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
-import os
-
-# App init
-app = FastAPI()
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-# Move DB connection to function
-def init():
-    from database import connect  # Delayed import
-    connect()
 
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@identity-db:5432/identity_db"
@@ -41,6 +28,9 @@ users = Table(
 
 engine = create_engine(DATABASE_URL.replace("asyncpg", "psycopg2"))
 metadata.create_all(engine)
+
+# App init
+app = FastAPI()
 
 # Allow requests from frontend (in Docker or local)
 app.add_middleware(
@@ -143,6 +133,3 @@ async def validate_user(user_id: str):
 # Serve React frontend build from ./static directory
 static_path = Path(__file__).parent / "static"
 app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
-
-if __name__ == "__main__":
-    init()
