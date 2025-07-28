@@ -146,7 +146,7 @@ async def validate_user(user_id: str):
 
 @app.delete("/users/{username}", status_code=204)
 def delete_user(username: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(users).filter(users.username == username).first()
     if user:
         db.delete(user)
         db.commit()
