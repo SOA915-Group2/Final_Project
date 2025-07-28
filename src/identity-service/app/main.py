@@ -97,9 +97,11 @@ async def get_user(username: str):
 async def lifespan(app: FastAPI):
     # Startup logic
     print("Starting app")
+    await database.connect()
     yield
     # Shutdown logic
     print("Shutting down app")
+    await database.disconnect()
 
 app = FastAPI(lifespan=lifespan)
 
