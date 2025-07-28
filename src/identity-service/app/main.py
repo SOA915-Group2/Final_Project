@@ -13,6 +13,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from passlib.hash import bcrypt
 
 # Database setup
 DATABASE_URL = "postgresql+asyncpg://postgres:postgres@identity-db:5432/identity_db"
@@ -101,6 +102,16 @@ async def register(user: UserCreate):
     query = users.insert().values(id=user_id, username=user.username, password_hash=hashed)
     await database.execute(query)
     return {"user_id": user_id}
+
+@app.delete("/users/{username}", status_code=204)
+def delete_user(username: str, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db.delete(user)
+    db.commit()
+    return
 
 @app.post("/login")
 async def login(user: UserCreate):
