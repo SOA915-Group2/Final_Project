@@ -14,7 +14,7 @@ async def test_register_login_and_get_products():
         "password": "testpass123"
     }
 
-    async with httpx.AsyncClient() as client:
+    async with AsyncClient() as client:
         # 1. Register
         reg_response = await client.post(f"{IDENTITY_API}/register", json=test_user)
         assert reg_response.status_code in (200, 201)
