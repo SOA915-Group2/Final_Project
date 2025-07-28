@@ -1,0 +1,10 @@
+python-jose[cryptography]
+passlib[bcrypt]
+#bcrypt==4.0.1
+fastapi
+uvicorn
+databases
+sqlalchemy
+asyncpg
+psycopg2-binary
+python-multipart
