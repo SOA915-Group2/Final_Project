@@ -9,6 +9,7 @@ on:
 env:
   PROJECT_ID: carbon-beanbag-465619-m4
   REGION: us-central1
+  ZONE: us-central1-a
   REPO: soa915-project-repo
   CLUSTER_NAME: soa-microservices-cluster
   IMAGE_NAME: identity-service
@@ -57,37 +58,23 @@ jobs:
 
     - name: Get GKE credentials
       run: |
-        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --region ${{ env.REGION }}
+        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }}
 
-    - name: Create Test Job
+    - name: Run Identity Service Tests
       run: |
-        cat <<EOF | kubectl apply -f -
-        apiVersion: batch/v1
-        kind: Job
-        metadata:
-          name: identity-service-test
-        spec:
-          template:
-            spec:
-              containers:
-              - name: test
-                image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-                command: ["pytest", "app/test_identity.py"]
-              restartPolicy: Never
-          backoffLimit: 0
-        EOF
+        kubectl apply -f k8s/test_pods/test_identity.yaml
 
     - name: Wait for Job Completion
-      run: kubectl wait --for=condition=complete job/identity-service-test --timeout=120s
+      run: kubectl wait --for=condition=complete job/identity-test --timeout=120s
 
     - name: Get Job Logs
       run: |
-        POD_NAME=$(kubectl get pods --selector=job-name=identity-service-test -o jsonpath='{.items[0].metadata.name}')
+        POD_NAME=$(kubectl get pods --selector=job-name=identity-test -o jsonpath='{.items[0].metadata.name}')
         kubectl logs $POD_NAME
 
     - name: Cleanup Test Job
       if: always()
-      run: kubectl delete job identity-service-test || true
+      run: kubectl delete job identity-test || true
 
   deploy:
     needs: test-in-k8s
