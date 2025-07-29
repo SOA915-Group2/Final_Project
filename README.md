@@ -14,6 +14,7 @@ System Diagram
 
 
 Microservices Implemented:
+
 	Identity Service – Registration, authentication, and user profile management.
  	Product Service – Catalog management and product data operations.
   	Order Service – User orders and transaction handling.
