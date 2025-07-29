@@ -15,10 +15,10 @@ System Diagram
 
 Microservices Implemented:
 
-	Identity Service – Registration, authentication, and user profile management.
- 	Product Service – Catalog management and product data operations.
-  	Order Service – User orders and transaction handling.
-   	Notification Service – Email/SMS notifications for actions.
+- Identity Service – Registration, authentication, and user profile management.
+- Product Service – Catalog management and product data operations.
+- Order Service – User orders and transaction handling.
+- Frontend Service – Frontend UI.
 
 Tech Stack:
 - Backend: Python / Node.js / Java (your choice)
