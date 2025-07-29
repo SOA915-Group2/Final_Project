@@ -6,7 +6,8 @@ This project demonstrates the design, development, containerization, orchestrati
 
 🧱 Architecture
 System Diagram
-<img width="1007" height="719" alt="image" src="https://github.com/user-attachments/assets/491b92bc-b333-4804-b281-46c177d5ca21" />
+<img width="973" height="719" alt="image" src="https://github.com/user-attachments/assets/bec1badf-b3e7-4c11-9568-d56d5e19e674" />
+
 
 
 
