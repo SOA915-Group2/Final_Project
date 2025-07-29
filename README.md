@@ -134,20 +134,27 @@ Secrets Required
 📂 Folder Structure
 ```bash
 .
-├── k8s/
-│   ├── identity/
-│   ├── product/
-│   ├── order/
-│   ├── frontend/
-│   ├── ingress.yaml
-│   ├── test_pods/
-│   ├── logging/
-│   └── monitoring/
-├── tests/
-│   └── test_identity.py
-├── .github/workflows/
-│   └── ci-cd.yaml
-└── README.md
+├── k8s
+│   ├── deployments
+│   ├── frontend
+│   ├── identity
+│   ├── ingress
+│   ├── logging
+│   ├── monitoring
+│   ├── order
+│   ├── product
+│   └── service_test
+│       ├── e2e
+│       ├── integration
+│       └── unit
+├── src
+│   ├── frontend
+│   ├── identity-service
+│   ├── order-service
+│   └── product-service
+└── tests
+    ├── integration
+    └── unit
 ```
 
 
