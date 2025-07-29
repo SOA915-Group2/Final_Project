@@ -74,7 +74,7 @@ jobs:
 
     - name: Run Identity Service Tests
       run: |
-        kubectl apply -f k8s/test_pods/test_identity.yaml
+        kubectl apply -f k8s/service_test/unit/test_identity.yaml
 
     - name: Wait for Job Completion
       run: kubectl wait --for=condition=complete job/identity-test --timeout=120s
