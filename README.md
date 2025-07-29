@@ -21,15 +21,16 @@ Microservices Implemented:
 - Frontend Service – Frontend UI.
 
 Tech Stack:
-- Backend: Python / Node.js / Java (your choice)
-- Databases: PostgreSQL / MongoDB (polyglot persistence per service)
-- Containerization: Docker, Docker Compose
-- Orchestration: Kubernetes (Minikube / Kind / Docker Desktop)
-- CI/CD: GitHub Actions / GitLab CI / Jenkins
-- Monitoring: Prometheus, Grafana
-- Logging: Fluentd / ELK Stack (if applicable)
 
-🚀 Getting Started
+- Backend: FastAPI, PostgreSQL/MongoDB
+- Frontend: React + TailwindCSS
+- Containerization: Docker
+- Orchestration: Kubernetes (GKE)
+- Monitoring: Prometheus, Grafana
+- Logging: Fluentd, Elasticsearch, Kibana
+- CI/CD: GitHub Actions
+
+🚀 Deployment Guide
 
 Prerequisites
 - Docker
@@ -37,27 +38,52 @@ Prerequisites
 - kubectl
 - Git
 
-Setup Instructions
+⚙️ Kubernetes Deployment
 
-1.	Clone the Repository
-```sh
-   git clone https://github.com/SOA915-Group2/Final_Project.git
-   cd Final_Project
+
+
+### 1. **Create GKE Cluster & Namespace**
+```bash
+gcloud container clusters get-credentials <CLUSTER_NAME> --region <REGION>
+kubectl create namespace microservice-app
 ```
 
-3.	Run with Docker Compose (Development)
-```sh
-   docker-compose up --build
-```
-5.	Run on Kubernetes (Minikube)
-```sh
-   minikube start
-   kubectl apply -f k8s/
+### 2. Deploy Microservices
+```bash
+kubectl apply -f k8s/identity/
+kubectl apply -f k8s/product/
+kubectl apply -f k8s/order/
+kubectl apply -f k8s/frontend/
 ```
 
-7.	Monitoring Dashboard (Prometheus + Grafana)
-- Prometheus: http://localhost:9090
-- Grafana: http://localhost:3000 (Default login: admin/admin)
+### 3. Deploy Logging Stack (EFK)
+```bash
+kubectl apply -f k8s/logging/elasticsearch.yaml
+kubectl apply -f k8s/logging/fluentd.yaml
+kubectl apply -f k8s/logging/kibana.yaml
+```
+
+### 4. Deploy Monitoring Stack (Prometheus & Grafana)
+```bash
+kubectl apply -f k8s/monitoring/prometheus.yaml
+kubectl apply -f k8s/monitoring/grafana.yaml
+```
+
+### 5. Expose Services via Ingress
+```bash
+kubectl apply -f k8s/ingress/nginx-resource.yaml
+```
+
+🌐 External Access URLs
+
+Component                     URL
+Frontend                      http://<INGRESS_IP>/
+Kibana                        http://<INGRESS_IP>/kibana
+Grafana                       http://<INGRESS_IP>/grafana
+Prometheus                    http://<INGRESS_IP>/prometheus
+
+Replace <INGRESS_IP> with kubectl get ingress result.
+
 
 🔧 Microservices Details
 
@@ -74,54 +100,55 @@ Setup Instructions
 - GET /products/{id}
 
 
-
-⚙️ Kubernetes Deployment
-
-Files:
-- deployment-user.yaml, deployment-product.yaml
-- service-user.yaml, service-product.yaml
-- configmap.yaml, secrets.yaml, hpa.yaml
-
-Commands:
-
-```sh
-kubectl apply -f k8s/deployment-user.yaml
-kubectl get pods
-kubectl logs <pod-name>
-```
-
 ✅ Testing
 - Unit tests: Located in /tests/unit
 - Integration tests: Validate API interaction between services
 - End-to-end tests: Test full application flow using Postman/Newman
 
-🔄 CI/CD Pipeline
-- Automated via GitHub Actions
-- Steps:
-- Lint & Test
-- Build Docker images
-- Deploy to local Kubernetes cluster
-- Notifications via Slack/Email (optional)
+- To run in Kubernetes:
+```bash
+kubectl apply -f k8s/service_test/unit/test_identity.yaml
+kubectl apply -f k8s/service_test/unit/test_order.yaml
+kubectl apply -f k8s/service_test/unit/test_product.yaml
+```
 
-📊 Monitoring & Logging
-- Prometheus: Application metrics scraping
-- Grafana: Dashboard for services
-- Logging: Fluentd or ELK integration (optional)
+🔄 CI/CD Pipeline
+GitHub Actions handles build, test, and deploy:
+
+Workflow Jobs
+- Build: Docker build & push to Google Artifact Registry
+- Test: Kubernetes pod runs unit/integration tests
+- Deploy: kubectl apply to GKE
+
+Secrets Required
+- GCP_PROJECT_ID
+- GCP_ARTIFACT_JSON
+- GCP_CLUSTER_NAME
+- GCP_REGION
+
+📊 Monitoring with Prometheus & Grafana
+- Prometheus scrapes metrics from services and stores time-series data.
+- Grafana dashboards visualize pod metrics, HTTP traffic, CPU/Memory usage.
+- Prometheus ServiceMonitors/targets configured via prometheus.yaml.
 
 📂 Folder Structure
-
-| Folder Structure |
-| ------ |
-| ├── src/frontend//|
-| ├── src/identity-service/|
-| ├── src/order-service/|
-| ├── src/product-service/|
-| ├── k8s/|
-| ├──├── deployments/|
-| ├──├── services/|
-| ├──├── config/|
-| ├── docker-compose.yml|
-| ├── README.md|
+```bash
+.
+├── k8s/
+│   ├── identity/
+│   ├── product/
+│   ├── order/
+│   ├── frontend/
+│   ├── ingress.yaml
+│   ├── test_pods/
+│   ├── logging/
+│   └── monitoring/
+├── tests/
+│   └── test_identity.py
+├── .github/workflows/
+│   └── ci-cd.yaml
+└── README.md
+```
 
 
 👥 Contributors
