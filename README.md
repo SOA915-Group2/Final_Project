@@ -31,7 +31,6 @@ Prerequisites
 - Docker
 - Docker Compose
 - kubectl
-- Minikube
 - Git
 
 Setup Instructions
