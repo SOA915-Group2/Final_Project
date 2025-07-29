@@ -18,8 +18,8 @@ BASE_URL = "http://identity-service"
 async def test_register_and_login():
     async with AsyncClient(base_url=BASE_URL) as client:
         # Delete a user
-        # res = await client.delete("/users/testuser2")
-        # assert res.status_code == 204
+        res = await client.delete("/users/testuser14")
+        assert res.status_code == 204
 
         # Register a user
         register_resp = await client.post("/register", json={"username": "testuser14", "password": "secret"})

@@ -14,9 +14,11 @@ env:
   CLUSTER_NAME: soa-microservices-cluster
   IMAGE_NAME: identity-service
   IMAGE_TAG: ${{ github.sha }}
+  PAUSE_ACTIONS: true
 
 jobs:
   docker-build-and-push:
+    if: env.PAUSE_ACTIONS != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +41,7 @@ jobs:
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
   test-in-k8s:
+    if: env.PAUSE_ACTIONS != 'true'
     needs: docker-build-and-push
     runs-on: ubuntu-latest
 
@@ -81,6 +84,7 @@ jobs:
       run: kubectl delete job identity-test || true
 
   deploy:
+    if: env.PAUSE_ACTIONS != 'true'
     needs: test-in-k8s
     runs-on: ubuntu-latest
 
