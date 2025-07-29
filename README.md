@@ -2,7 +2,8 @@
 
 📌 Overview
 
-This project demonstrates the design, development, containerization, orchestration, and monitoring of a microservices-based application. Built using RESTful APIs, Docker, Kubernetes, and integrated with CI/CD and observability tools, the project simulates a real-world system on a local development environment.
+This project implements a fully containerized, cloud-native microservices architecture on Kubernetes (GKE). It includes independent services for identity, product, order, and frontend UI, integrated with centralized logging (EFK stack) and monitoring (Prometheus & Grafana). CI/CD is automated via GitHub Actions.
+
 
 🧱 Architecture
 System Diagram
