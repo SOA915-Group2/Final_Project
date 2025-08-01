@@ -38,7 +38,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # MongoDB setup
-MONGO_DETAILS = "mongodb://mdb:27017"
+MONGO_DETAILS = "mongodb://mongodb:27017"
 client = AsyncIOMotorClient(MONGO_DETAILS)
 db = client.order_db
 orders_collection = db.orders

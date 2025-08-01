@@ -9,7 +9,7 @@ on:
     inputs:
       pause:
         description: 'Pause Actions'
-        required: false
+        required: true
         default: 'false'
 
 env:
