@@ -22,12 +22,12 @@ async def test_register_and_login():
         # assert res.status_code == 204
 
         # Register a user
-        register_resp = await client.post("/register", json={"username": "testuser20", "password": "secret"})
+        register_resp = await client.post("/register", json={"username": "testuser21", "password": "secret"})
         assert register_resp.status_code == 200
         assert "user_id" in register_resp.json()
 
         # Login with the registered user
-        login_resp = await client.post("/login", json={"username": "testuser20", "password": "secret"})
+        login_resp = await client.post("/login", json={"username": "testuser21", "password": "secret"})
         assert login_resp.status_code == 200
         data = login_resp.json()
         assert "access_token" in data

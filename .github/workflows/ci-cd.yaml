@@ -9,8 +9,8 @@ on:
     inputs:
       pause:
         description: 'Pause Actions'
-        required: true
-        default: 'false'
+        required: false
+        default: 'true'
 
 env:
   PROJECT_ID: carbon-beanbag-465619-m4
