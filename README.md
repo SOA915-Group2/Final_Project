@@ -154,7 +154,8 @@ Secrets Required
 │   └── product-service
 └── tests
     ├── integration
-    └── unit
+    ├── unit
+    └── e2e
 ```
 
 
