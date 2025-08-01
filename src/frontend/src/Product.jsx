@@ -70,7 +70,7 @@ export default function ProductPage() {
   const placeOrder = async (productId) => {
     const token = localStorage.getItem("token");
     if (!token) return alert("You must be logged in to place an order.");
-    const res = await fetch(`${ORDER_API}/orders`, {
+    const res = await fetch(`${ORDER_API}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
