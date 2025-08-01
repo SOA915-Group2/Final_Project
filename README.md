@@ -76,11 +76,12 @@ kubectl apply -f k8s/ingress/nginx-resource.yaml
 
 ## 🌐 External Access URLs
 
-Component                     URL
-Frontend                      http://<INGRESS_IP>/
-Kibana                        http://<INGRESS_IP>/kibana
-Grafana                       http://<INGRESS_IP>/grafana
-Prometheus                    http://<INGRESS_IP>/prometheus
+| Component | URL |
+| ------ | ------ |
+| Frontend | http://<INGRESS_IP>/ |
+| Kibana | http://<INGRESS_IP>/kibana |
+| Grafana | http://<INGRESS_IP>/grafana |
+| Prometheus | http://<INGRESS_IP>/prometheus |
 
 Replace <INGRESS_IP> with kubectl get ingress result.
 
